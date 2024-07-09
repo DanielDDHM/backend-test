@@ -17,8 +17,9 @@ const (
 )
 
 func GetBreeds(w http.ResponseWriter, r *http.Request) {
-    vars := mux.Vars(r)
-    species := vars["species"]
+    params := r.URL.Query()
+    species := params.Get("species")
+    petSizes := params.Get("petSizes")
 
     var breeds []models.Breed
 
@@ -32,6 +33,10 @@ func GetBreeds(w http.ResponseWriter, r *http.Request) {
 
     if species != "" {
         query = query.Where("species = ?", species)
+    }
+
+    if petSizes != "" {
+        query = query.Where("pet_size = ?", petSizes)
     }
 
     if err := query.Find(&breeds).Error; err != nil {
